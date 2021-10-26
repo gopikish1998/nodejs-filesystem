@@ -43,15 +43,17 @@ app.post('/write',async function(req,res){
     }
 })
 app.get('/read', function(req,res){
+    let data=[]
     try {
         fs.readdir("./txts",function (err,files){
             if(err) throw err;
             files.forEach(element => {
                 if(path.extname(element)==".txt"){
                     console.log(element)
+                    data.push(element)
                 }
             });
-            res.json({
+            res.json({data,
                 message:"Files retrived successfully"
             })
         })
