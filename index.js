@@ -4,8 +4,6 @@ const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
 const PORT = process.env.PORT || 3000;
-const dotenv = require("dotenv")
-dotenv.config();
 const date = new Date();
 const day = date.getDate();
 const filename = `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}_${date.getHours()}_${date.getMinutes()}_${date.getSeconds()}`;
@@ -14,20 +12,31 @@ app.use(cors({
 }))
 
 app.post('/write',async function(req,res){
-
     try {
-        fs.mkdir('./txts/',(err)=>{
-            if (err) throw err;
-            fs.writeFile(`./txts/${filename}.txt`, `${date.toJSON()}`, function (err) {
-                if (err) 
-                    return console.log(err);
-                console.log('TextFile created successfully');
-            });
-            res.json({
-                message:"File created successfully"
-            })
+        fs.access('./txts',(err)=>{
+            if (err) {
+                fs.mkdir('./txts', (err)=>{
+                    fs.writeFile(`./txts/${filename}.txt`, `${date.toJSON()}`, function (err) {
+                        if (err) 
+                            return console.log(err);
+                        console.log('TextFile created successfully');
+                    });
+                    res.json({
+                        message:"File created successfully"
+                    })
+                })
+            }
+            else{
+                    fs.writeFile(`./txts/${filename}.txt`, `${date.toJSON()}`, function (err) {
+                        if (err) 
+                            return console.log(err);
+                        console.log('TextFile created successfully');
+                    });
+                    res.json({
+                        message:"File created successfully"
+                    })
+            }
         })
-        
         // console.log("File created successfully")
     } catch (error) {
         console.log(error)
